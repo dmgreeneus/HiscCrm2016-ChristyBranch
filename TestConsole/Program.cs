@@ -128,7 +128,8 @@ namespace TestConsole
                                 {
                                     jsonstring.Append(",");
                                 }
-                                property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                //property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("?", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}':", property);
                                 value = propertyvalue[1].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}'", value);

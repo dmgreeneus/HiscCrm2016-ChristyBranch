@@ -17,7 +17,7 @@ namespace HomeInsteadWorkflowActivities
     public class ConvertHtmlTdsToJsonString : CodeActivity
     {
 
-         /// <summary>
+        /// <summary>
         /// String to Parse and Convert
         /// </summary>
         [Input("InputString")]
@@ -50,7 +50,7 @@ namespace HomeInsteadWorkflowActivities
                     JsonString.Set(executionContext, ParseHtmlTdsToJsonString(tracingService, service, InputString.Get(executionContext)));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string exceptionMessage = ex.Message;
                 throw new InvalidOperationException(exceptionMessage, ex);
@@ -83,7 +83,7 @@ namespace HomeInsteadWorkflowActivities
                 {
                     if (tag.Attributes["name"] != null && tag.Attributes["content"] != null)
                     {
-                        if(tag.Attributes["name"].Value != "Generator")
+                        if (tag.Attributes["name"].Value != "Generator")
 
                         {
                             isTD = true;
@@ -126,7 +126,7 @@ namespace HomeInsteadWorkflowActivities
                 HtmlNodeCollection brs = document.DocumentNode.SelectNodes("//body");
                 if (brs != null && brs.Count > 0)
                 {
-                    HtmlNode br = brs[0];                    
+                    HtmlNode br = brs[0];
                     string brtext = br.InnerText;
                     string[] lines = brtext.Split('\r');
                     foreach (string line in lines)
@@ -138,25 +138,26 @@ namespace HomeInsteadWorkflowActivities
                             {
                                 jsonstring.Append(",");
                             }
-                            property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                            //property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                            property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("?", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}':", property);
                             value = propertyvalue[1].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}'", value);
                         }
-                     }
+                    }
                 }
 
 
             }
 
 
-                jsonstring.Append("}");
-                var deserialized = JsonConvert.DeserializeObject(jsonstring.ToString());
-                output = JsonConvert.SerializeObject(deserialized);
-                if (output == "{}") { output = null; }
-                return output;
+            jsonstring.Append("}");
+            var deserialized = JsonConvert.DeserializeObject(jsonstring.ToString());
+            output = JsonConvert.SerializeObject(deserialized);
+            if (output == "{}") { output = null; }
+            return output;
 
-            }
+        }
 
 
 
