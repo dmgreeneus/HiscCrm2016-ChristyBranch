@@ -65,6 +65,7 @@ namespace TestConsole
 
             //HTML BODY BR's
             String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage4.html";
+            //String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage1.html";
             var documentBody = new HtmlDocument();
             documentBody.Load(fileBody);
             string inputhtmlbody = documentBody.DocumentNode.InnerHtml;
@@ -79,9 +80,10 @@ namespace TestConsole
         private static string ParseHtmlBrsBodytoJson(string input)
         {
             string output = null;
-            var isTD = false;
+            var isTD = true;
             StringBuilder jsonstring = new StringBuilder();
             jsonstring.Append("{");
+            bool isPreviousProperty = false;
             string property = null;
             string value = null;
             if (!String.IsNullOrEmpty(input))
@@ -96,10 +98,10 @@ namespace TestConsole
                     {
                         if (tag.Attributes["name"] != null && tag.Attributes["content"] != null)
                         {
-                            if (tag.Attributes["name"].Value != "Generator")
+                            if (tag.Attributes["name"].Value == "Generator")
 
                             {
-                                isTD = true;
+                                isTD = false;
                                
                                
                             }
@@ -108,7 +110,7 @@ namespace TestConsole
                 }
                 else
                 {
-                    isTD = false;
+                    isTD = true;
                     
                 }
                 if(!isTD)
@@ -132,6 +134,33 @@ namespace TestConsole
                                 property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("?", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}':", property);
                                 value = propertyvalue[1].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                jsonstring.AppendFormat("'{0}'", value);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    HtmlNodeCollection tds = document.DocumentNode.SelectNodes("//td");
+                    if (tds != null && tds.Count > 0)
+                    {
+                        foreach (HtmlNode td in tds)
+                        {
+                            string tdtext = td.InnerText;
+                            if ((tdtext.Contains(":") && !tdtext.Contains("Last Modified") && !tdtext.Contains(":/") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("-") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("=") && !tdtext.Contains("?")))//TODO:  IDENTIFY PROPERTY VS VALUE BETTER
+                            {
+                                if (jsonstring.Length > 1)
+                                {
+                                    jsonstring.Append(",");
+                                }
+                                isPreviousProperty = true;
+                                property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                jsonstring.AppendFormat("'{0}':", property);
+                            }
+                            else if (isPreviousProperty)
+                            {
+                                isPreviousProperty = false;
+                                value = td.InnerText.Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}'", value);
                             }
                         }
