@@ -109,7 +109,7 @@ namespace HomeInsteadWorkflowActivities
                                 jsonstring.Append(",");
                             }
                             isPreviousProperty = true;
-                            property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                            property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Replace("?",string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}':", property);
                         }
                         else if (isPreviousProperty)
