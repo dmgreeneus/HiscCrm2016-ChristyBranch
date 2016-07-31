@@ -74,7 +74,7 @@ namespace HomeInsteadWorkflowActivities
             StringBuilder jsonstring = new StringBuilder();
             jsonstring.Append("{");
             var document = new HtmlDocument();
-            var isTD = false;
+            var isTD = true;
             document.LoadHtml(input);
             var metaTags = document.DocumentNode.SelectNodes("//meta");
             if (metaTags != null)
@@ -83,10 +83,10 @@ namespace HomeInsteadWorkflowActivities
                 {
                     if (tag.Attributes["name"] != null && tag.Attributes["content"] != null)
                     {
-                        if (tag.Attributes["name"].Value != "Generator")
+                        if (tag.Attributes["name"].Value == "Generator")
 
                         {
-                            isTD = true;
+                            isTD = false;
                         }
                     }
                 }
