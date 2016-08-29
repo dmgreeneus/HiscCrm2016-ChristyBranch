@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using HtmlAgilityPack;
 
@@ -64,9 +63,10 @@ namespace TestConsole
             //Console.WriteLine(outputhtmlbr);
 
             //HTML BODY BR's
-            String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage4.html";
+            String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage5.html";
+            //String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage4.html";
             //String fileBody = @"C:\Users\dgreene\Documents\BizDev\Home Instead\Workflow\HiscCrm2016-ChristyBranch\TestConsole\HTMLPage1.html";
-            var documentBody = new HtmlDocument();
+            var documentBody = new HtmlAgilityPack.HtmlDocument();
             documentBody.Load(fileBody);
             string inputhtmlbody = documentBody.DocumentNode.InnerHtml;
 
@@ -88,7 +88,7 @@ namespace TestConsole
             string value = null;
             if (!String.IsNullOrEmpty(input))
             {
-                var document = new HtmlDocument();
+                var document = new HtmlAgilityPack.HtmlDocument();
                 document.LoadHtml(input);
                 var metaTags = document.DocumentNode.SelectNodes("//meta");
                 
@@ -147,20 +147,26 @@ namespace TestConsole
                         foreach (HtmlNode td in tds)
                         {
                             string tdtext = td.InnerText;
-                            if ((tdtext.Contains(":") && !tdtext.Contains("Last Modified") && !tdtext.Contains(":/") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("-") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("=") && !tdtext.Contains("?")))//TODO:  IDENTIFY PROPERTY VS VALUE BETTER
+                            if (tdtext.Contains("BusinessLocationCity1"))
+                            {
+                                Console.WriteLine(tdtext.ToString());
+                                //MessageBox.Show(tdtext.ToString());
+                            }
+
+                            if ((tdtext.Contains(":") && !tdtext.Contains("Last Modified") && !tdtext.Contains(":/") ) || (tdtext.Contains("-") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("=") && !tdtext.Contains("?")))//TODO:  IDENTIFY PROPERTY VS VALUE BETTER
                             {
                                 if (jsonstring.Length > 1)
                                 {
                                     jsonstring.Append(",");
                                 }
                                 isPreviousProperty = true;
-                                property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Replace("(",string.Empty).Replace(")",string.Empty).Replace("?",string.Empty).Replace(".",string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}':", property);
                             }
                             else if (isPreviousProperty)
                             {
                                 isPreviousProperty = false;
-                                value = td.InnerText.Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                                value = td.InnerText.Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Replace("'",string.Empty).Trim();
                                 jsonstring.AppendFormat("'{0}'", value);
                             }
                         }
@@ -208,7 +214,7 @@ namespace TestConsole
             string output = null;
             StringBuilder jsonstring = new StringBuilder();
             jsonstring.Append("{");
-            var document = new HtmlDocument();
+            var document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(input);
             HtmlNodeCollection tds = document.DocumentNode.SelectNodes("//td");
             bool isPreviousProperty = false;
@@ -248,7 +254,7 @@ namespace TestConsole
             string output = null;
             StringBuilder jsonstring = new StringBuilder();
             jsonstring.Append("{");
-            var document = new HtmlDocument();
+            var document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(input);
             HtmlNodeCollection ps = document.DocumentNode.SelectNodes("//p");
             if (ps != null && ps.Count > 0)
@@ -281,7 +287,7 @@ namespace TestConsole
             string output = null;
             StringBuilder jsonstring = new StringBuilder();
             jsonstring.Append("{");
-            var document = new HtmlDocument();
+            var document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(input);
             HtmlNodeCollection ps = document.DocumentNode.SelectNodes("//p");
             if (ps != null && ps.Count > 0)

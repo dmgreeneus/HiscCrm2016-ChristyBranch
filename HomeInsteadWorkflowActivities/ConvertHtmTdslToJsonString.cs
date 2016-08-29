@@ -102,20 +102,20 @@ namespace HomeInsteadWorkflowActivities
                     foreach (HtmlNode td in tds)
                     {
                         string tdtext = td.InnerText;
-                        if ((tdtext.Contains(":") && !tdtext.Contains("Last Modified") && !tdtext.Contains(":/") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("-") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("=") && !tdtext.Contains("?")))//TODO:  IDENTIFY PROPERTY VS VALUE BETTER
+                        if ((tdtext.Contains(":") && !tdtext.Contains("Last Modified") && !tdtext.Contains(":/") ) || (tdtext.Contains("-") && !tdtext.Any(c => char.IsDigit(c))) || (tdtext.Contains("=") && !tdtext.Contains("?")))//TODO:  IDENTIFY PROPERTY VS VALUE BETTER
                         {
                             if (jsonstring.Length > 1)
                             {
                                 jsonstring.Append(",");
                             }
                             isPreviousProperty = true;
-                            property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Replace("?",string.Empty).Trim();
+                            property = td.InnerText.Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Replace("?",string.Empty).Replace("EMail","Email").Replace("#",string.Empty).Replace(",",string.Empty).Replace(".",string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}':", property);
                         }
                         else if (isPreviousProperty)
                         {
                             isPreviousProperty = false;
-                            value = td.InnerText.Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                            value = td.InnerText.Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Replace("'",string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}'", value);
                         }
                     }
@@ -141,7 +141,7 @@ namespace HomeInsteadWorkflowActivities
                             //property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
                             property = propertyvalue[0].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("?", string.Empty).Replace("/", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace("-", string.Empty).Replace("\r\n", string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}':", property);
-                            value = propertyvalue[1].Replace(" ", string.Empty).Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
+                            value = propertyvalue[1].Replace(":", string.Empty).Replace("&nbsp;", string.Empty).Replace("\r\n", string.Empty).Trim();
                             jsonstring.AppendFormat("'{0}'", value);
                         }
                     }
